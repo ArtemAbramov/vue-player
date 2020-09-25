@@ -18,7 +18,7 @@
         </div>
       </div>
       <volume
-          :volume="1"
+          :volume="volumeLevel"
           @volumeToggle="volumeToggle"
       ></volume>
     </div>
@@ -47,7 +47,6 @@ export default {
 
     const audio = new Audio()
     audio.src = currentTrack.value.src
-    audio.volume = 0.1
 
     const progress = ref(0)
     const currentMinutes = ref('0')
@@ -76,8 +75,16 @@ export default {
       }
     }
 
-    const volumeToggle = () => {
+    const volumeLevel = ref(audio.volume)
 
+    const volumeToggle = () => {
+      if (volumeLevel.value) {
+        volumeLevel.value = 0
+        audio.volume = 0
+      } else {
+        volumeLevel.value = 1
+        audio.volume = 1
+      }
     }
 
     return {
@@ -89,7 +96,8 @@ export default {
       durationMinutes,
       durationSeconds,
       currentTrack,
-      volumeToggle
+      volumeToggle,
+      volumeLevel
     }
   }
 }

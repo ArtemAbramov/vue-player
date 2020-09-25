@@ -26,6 +26,7 @@ export default {
 
 <style lang="scss" scoped>
 .volume-toggle {
+  width: 2rem;
   color: #bdbdbd;
   font-size: 1.4rem;
 }
