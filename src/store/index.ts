@@ -2,7 +2,16 @@ import { createStore } from 'vuex'
 
 export default createStore({
   state: {
-    currentTrack: null
+    currentTrack: {
+      src: 'Audio.mp3',
+      meta: {
+        title: 'Hereafter',
+        artist: 'Architects',
+        album: 'Holy hell',
+        year: '2018',
+        img: './img/Album.jpg'
+      }
+    }
   },
   mutations: {
     setCurrentTrack(state, payload) {

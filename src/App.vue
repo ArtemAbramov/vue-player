@@ -41,4 +41,12 @@ body {
     background-color: #616161;
   }
 }
+
+a {
+  text-decoration: none;
+}
+
+li {
+  list-style: none;
+}
 </style>
