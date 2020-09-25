@@ -20,6 +20,7 @@
       <volume
           :volume="volumeLevel"
           @volumeToggle="volumeToggle"
+          @volumeChange="volumeChange"
       ></volume>
     </div>
   </div>
@@ -65,7 +66,6 @@ export default {
     const paused = ref(audio.paused)
 
     const playPause = () => {
-      console.log(audio)
       if (audio.paused) {
         audio.play()
         paused.value = false
@@ -76,15 +76,21 @@ export default {
     }
 
     const volumeLevel = ref(audio.volume)
+    const volumeSet = ref(audio.volume)
 
     const volumeToggle = () => {
       if (volumeLevel.value) {
         volumeLevel.value = 0
         audio.volume = 0
       } else {
-        volumeLevel.value = 1
-        audio.volume = 1
+        volumeLevel.value = volumeSet.value
+        audio.volume = volumeSet.value
       }
+    }
+
+    const volumeChange = (volume) => {
+      audio.volume = volume.value
+      volumeSet.value = volume.value
     }
 
     return {
@@ -97,7 +103,8 @@ export default {
       durationSeconds,
       currentTrack,
       volumeToggle,
-      volumeLevel
+      volumeLevel,
+      volumeChange
     }
   }
 }

@@ -1,13 +1,13 @@
 <template>
   <div class="controls">
     <a class="controls-link" href="#" @click.prevent>
-      <i class="controls-link__icon fa fa-backward"></i>
+      <i class="controls-link__icon fas fa-step-backward"></i>
     </a>
     <a class="controls-link play-pause" href="#" @click.prevent="playPause">
       <i class="controls-link__icon fa" :class="[paused ? 'fa-play' : '', 'fa-pause']"></i>
     </a>
     <a class="controls-link" href="#" @click.prevent>
-      <i class="controls-link__icon fa fa-forward"></i>
+      <i class="controls-link__icon fas fa-step-forward"></i>
     </a>
   </div>
 </template>
@@ -39,7 +39,7 @@ export default {
     text-shadow: 0 0 4px rgba(0,0,0, .5);
 
     &.play-pause {
-      margin: 0 1rem;
+      margin: 0 2rem;
       font-size: 2rem;
     }
 

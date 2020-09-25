@@ -1,7 +1,17 @@
 <template>
   <div class="volume-block">
-    <div class="volume-bar">
-      <div class="volume-bar__pointer"></div>
+    <div
+        class="volume-bar"
+        ref="bar"
+        @mousemove="dragPointer($event)"
+    >
+      <div class="volume-bar__primary" :style="{width: `${pointer}px`}"></div>
+      <div
+          class="volume-bar__pointer"
+          @mousedown="dragged = true"
+          @mouseup="dragged = false"
+          :style="{left: `${pointer}px`}"
+      ></div>
     </div>
     <a href="#" class="volume-toggle" @click.prevent="volumeToggle">
       <i class="fas" :class="[volume ? 'fa-volume-up' : '', 'fa-volume-mute']"></i>
@@ -10,6 +20,7 @@
 </template>
 
 <script lang="ts">
+import {ref} from 'vue'
 export default {
   props: ['volume'],
   setup(props, {emit}) {
@@ -17,8 +28,28 @@ export default {
       emit('volumeToggle')
     }
 
+    const dragged = ref(false)
+    const bar = ref(null)
+    const pointer = ref(80)
+    const volume = ref(1)
+    emit('volumeChange', volume)
+
+    const dragPointer = (event) => {
+      if (dragged.value) {
+        if ((event.clientX >= bar.value.offsetLeft) && (event.clientX <= bar.value.offsetLeft + bar.value.clientWidth)) {
+          pointer.value = event.clientX - bar.value.offsetLeft
+          volume.value = 1 / bar.value.clientWidth * pointer.value
+          emit('volumeChange', volume)
+        }
+      }
+    }
+
     return {
-      volumeToggle
+      volumeToggle,
+      dragged,
+      dragPointer,
+      bar,
+      pointer
     }
   }
 }
@@ -43,9 +74,19 @@ export default {
   margin-right: 1rem;
   height: 3px;
   width: 5rem;
-  background-color: #bdbdbd;
+  background-color: #616161;
   border-radius: 1px;
   cursor: pointer;
+
+  &__primary {
+    position: absolute;
+    height: 100%;
+    border-radius: 1px;
+    top: 50%;
+    left: 0;
+    transform: translateY(-50%);
+    background-color: #fafafa;
+  }
 
   &__pointer {
     position: absolute;
