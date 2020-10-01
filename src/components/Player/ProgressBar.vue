@@ -1,13 +1,58 @@
 <template>
-  <div class="progress-bar">
-    <div class="primary-progress" :style="{width: `${progress * 100}%`}"></div>
-    <div class="progress-pointer" :style="{left: `${progress * 100}%`}"></div>
+  <div
+      class="progress-bar"
+      ref="bar"
+      @mousemove="dragPointer($event)"
+      @click="changeProgress"
+  >
+    <div
+        class="primary-progress"
+        :style="{width: `${progress * 100}%`}"
+    ></div>
+    <div
+        class="progress-pointer"
+        :style="{left: `${progress * 100}%`}"
+        @mousedown="dragged = true"
+        @mouseup="dragged = false"
+    ></div>
   </div>
 </template>
 
 <script lang="ts">
+import {ref} from 'vue'
 export default {
-  props: ['progress']
+  props: ['progress'],
+  setup(props, {emit}) {
+    const dragged = ref(false)
+    const bar = ref(null)
+    const pointer = ref(0)
+    const progress = ref(0)
+    const dragPointer = (event) => {
+      if (dragged.value) {
+        if ((event.clientX >= bar.value.offsetLeft) && (event.clientX <= bar.value.offsetLeft + bar.value.clientWidth)) {
+          pointer.value = event.clientX - bar.value.offsetLeft
+          progress.value = 1 / bar.value.clientWidth * pointer.value * 100
+          emit('changeProgress', progress)
+        }
+      }
+    }
+
+    const changeProgress = (event) => {
+      if ((event.clientX >= bar.value.offsetLeft) && (event.clientX <= bar.value.offsetLeft + bar.value.clientWidth)) {
+        pointer.value = event.clientX - bar.value.offsetLeft
+        progress.value = 1 / bar.value.clientWidth * pointer.value * 100
+        emit('changeProgress', progress)
+      }
+    }
+
+    return {
+      pointer,
+      dragPointer,
+      changeProgress,
+      dragged,
+      bar
+    }
+  }
 }
 </script>
 

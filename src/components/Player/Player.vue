@@ -1,6 +1,6 @@
 <template>
   <div class="player">
-    <progress-bar :progress="progress"></progress-bar>
+    <progress-bar :progress="progress" @changeProgress="changeProgress"></progress-bar>
     <div class="player-body">
       <controls :paused="paused" @playpause="playPause"></controls>
       <p class="player__timer">{{currentMinutes}}:{{currentSeconds}} / {{durationMinutes}}:{{durationSeconds}}</p>
@@ -63,6 +63,11 @@ export default {
       progress.value = audio.currentTime / audio.duration
     })
 
+    const changeProgress = (percent) => {
+      audio.currentTime = Math.floor(audio.duration / 100 * percent.value)
+      progress.value = audio.currentTime / audio.duration
+    }
+
     const paused = ref(audio.paused)
 
     const playPause = () => {
@@ -97,6 +102,7 @@ export default {
       playPause,
       paused,
       progress,
+      changeProgress,
       currentMinutes,
       currentSeconds,
       durationMinutes,
