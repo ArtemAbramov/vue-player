@@ -1,12 +1,12 @@
 <template>
   <div class="controls">
-    <a class="controls-link" href="#" @click.prevent>
+    <a class="controls-link" href="#" @click.prevent="prevTrack">
       <i class="controls-link__icon fas fa-step-backward"></i>
     </a>
     <a class="controls-link play-pause" href="#" @click.prevent="playPause">
       <i class="controls-link__icon fa" :class="[paused ? 'fa-play' : '', 'fa-pause']"></i>
     </a>
-    <a class="controls-link" href="#" @click.prevent>
+    <a class="controls-link" href="#" @click.prevent="nextTrack">
       <i class="controls-link__icon fas fa-step-forward"></i>
     </a>
   </div>
@@ -21,8 +21,18 @@ export default {
       emit('playpause')
     }
 
+    const nextTrack = () => {
+      emit('nextTrack')
+    }
+
+    const prevTrack = () => {
+      emit('prevTrack')
+    }
+
     return {
-      playPause
+      playPause,
+      nextTrack,
+      prevTrack
     }
   }
 }

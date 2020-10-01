@@ -2,8 +2,13 @@
   <div class="player">
     <progress-bar :progress="progress" @changeProgress="changeProgress"></progress-bar>
     <div class="player-body">
-      <controls :paused="paused" @playpause="playPause"></controls>
-      <p class="player__timer">{{currentMinutes}}:{{currentSeconds}} / {{durationMinutes}}:{{durationSeconds}}</p>
+      <controls
+          :paused="paused"
+          @playpause="playPause"
+          @prevTrack="prevTrack"
+          @nextTrack="nextTrack"
+      ></controls>
+      <p class="player__timer">{{currentMinutes}}:{{currentSeconds}} / {{durationMinutes == 'NaN' ? '0' : durationMinutes}}:{{durationSeconds == 'NaN' ? '00' : durationSeconds}}</p>
       <div class="track-meta">
         <img class="track-meta__img" :src="[currentTrack.meta.img]" :alt="[currentTrack.meta.album]">
         <div class="track-meta-body">
@@ -80,6 +85,20 @@ export default {
       }
     }
 
+    const prevTrack = () => {
+      store.dispatch('prevTrack')
+      audio.src = currentTrack.value.src
+      audio.play()
+      paused.value = false
+    }
+
+    const nextTrack = () => {
+      store.dispatch('nextTrack')
+      audio.src = currentTrack.value.src
+      audio.play()
+      paused.value = false
+    }
+
     const volumeLevel = ref(audio.volume)
     const volumeSet = ref(audio.volume)
 
@@ -110,7 +129,9 @@ export default {
       currentTrack,
       volumeToggle,
       volumeLevel,
-      volumeChange
+      volumeChange,
+      prevTrack,
+      nextTrack
     }
   }
 }
@@ -137,7 +158,7 @@ export default {
 
 .track-meta {
   display: flex;
-  margin: 0 25rem;
+  margin: 0 18rem;
   color: #fafafa;
 
   &-body {
