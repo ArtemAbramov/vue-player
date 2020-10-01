@@ -4,6 +4,7 @@
         class="volume-bar"
         ref="bar"
         @mousemove="dragPointer($event)"
+        @click="changeVolume"
     >
       <div class="volume-bar__primary" :style="{width: `${pointer}px`}"></div>
       <div
@@ -44,12 +45,21 @@ export default {
       }
     }
 
+    const changeVolume = (event) => {
+      if ((event.clientX >= bar.value.offsetLeft) && (event.clientX <= bar.value.offsetLeft + bar.value.clientWidth)) {
+        pointer.value = event.clientX - bar.value.offsetLeft
+        volume.value = 1 / bar.value.clientWidth * pointer.value
+        emit('volumeChange', volume)
+      }
+    }
+
     return {
       volumeToggle,
       dragged,
       dragPointer,
       bar,
-      pointer
+      pointer,
+      changeVolume
     }
   }
 }
