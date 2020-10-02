@@ -1,6 +1,8 @@
 <template>
   <div class="auth-wrapper">
-    <slot/>
+    <div class="auth-card">
+      <slot></slot>
+    </div>
   </div>
 </template>
 
@@ -21,5 +23,13 @@ export default {
   justify-content: center;
   width: 100vw;
   height: 100vh;
+}
+
+.auth-card {
+  background-color: #616161;
+  border-radius: 5px;
+  box-shadow: 0 0 4px 2px rgba(0,0,0, .3);
+  padding: 1.5rem;
+  padding-bottom: 2rem;
 }
 </style>
