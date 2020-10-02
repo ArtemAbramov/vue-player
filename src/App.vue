@@ -1,17 +1,15 @@
 <template>
-  <app-header></app-header>
-  <router-view/>
-  <app-player></app-player>
+  <component :is="layout">
+    <router-view/>
+  </component>
 </template>
 
 <script lang="ts">
-import Header from "@/components/Template/Header.vue";
-import Player from "@/components/Player/Player.vue";
-
 export default {
-  components: {
-    appHeader: Header,
-    appPlayer: Player
+  computed: {
+    layout() {
+      return this.$route.meta.layout || 'default-layout'
+    }
   }
 }
 </script>

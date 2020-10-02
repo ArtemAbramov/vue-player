@@ -2,6 +2,7 @@ import { createStore } from 'vuex'
 
 export default createStore({
   state: {
+    layout: 'default-layout',
     currentTrack: {
       id: 0,
       src: 'Audio.mp3',
@@ -39,6 +40,9 @@ export default createStore({
     ]
   },
   mutations: {
+    setLayout(state, payload) {
+      state.layout = payload
+    },
     setCurrentTrack(state, payload) {
       state.currentTrack = payload
     },
@@ -54,6 +58,9 @@ export default createStore({
     }
   },
   actions: {
+    setLayout(context, payload) {
+      context.commit('setLayout', payload)
+    },
     setCurrentTrack(context, payload) {
       context.commit('setCurrentTrack', payload)
     },
@@ -65,6 +72,9 @@ export default createStore({
     }
   },
   getters: {
+    layout(state) {
+      return state.layout
+    },
     getCurrentTrack(state) {
       return state.currentTrack
     }
