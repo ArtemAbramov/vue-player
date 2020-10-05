@@ -1,6 +1,10 @@
 <template>
   <div class="player">
-    <progress-bar :progress="progress" @changeProgress="changeProgress"></progress-bar>
+    <progress-bar
+        :progress="progress"
+        @changeProgress="changeProgress"
+        :durationTime="durationTime"
+    ></progress-bar>
     <div class="player-body">
       <controls
           :paused="paused"
@@ -59,6 +63,7 @@ export default {
     const currentSeconds = ref('00')
     const durationMinutes = ref('0')
     const durationSeconds = ref('00')
+    const durationTime = ref(0)
 
     audio.addEventListener('timeupdate', () => {
       currentMinutes.value = `${Math.floor(Math.floor(audio.currentTime) / 60)}`
@@ -66,6 +71,10 @@ export default {
       durationMinutes.value = `${Math.floor(Math.floor(audio.duration) / 60)}`
       durationSeconds.value = `${Math.floor(audio.duration) % 60 < 10 ? `0${Math.floor(audio.duration) % 60}` : Math.floor(audio.duration) % 60}`
       progress.value = audio.currentTime / audio.duration
+    })
+
+    audio.addEventListener('canplay', () => {
+      durationTime.value = audio.duration
     })
 
     const changeProgress = (percent) => {
@@ -131,7 +140,8 @@ export default {
       volumeLevel,
       volumeChange,
       prevTrack,
-      nextTrack
+      nextTrack,
+      durationTime
     }
   }
 }

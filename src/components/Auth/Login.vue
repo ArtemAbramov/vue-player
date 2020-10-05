@@ -4,6 +4,7 @@
     <input type="text" v-model="mail" placeholder="Enter your E-mail">
     <input type="text" v-model="password" placeholder="Enter password">
     <input type="text" v-model="passwordRepeated" placeholder="Repeat password">
+    <button class="login-form__submit">Login</button>
   </form>
 </template>
 
@@ -36,7 +37,7 @@ export default {
 
   input {
     color: #fafafa;
-    font-size: 1.2rem;
+    font-size: 1rem;
     padding: .3rem;
     background: none;
     border: none;
@@ -47,10 +48,21 @@ export default {
       margin-bottom: 1rem;
     }
   }
+
+  &__submit {
+    margin-top: 2rem;
+    background-color: #bdbdbd;
+    border: none;
+    color: #fafafa;
+    font-weight: 600;
+    border-radius: 5px;
+    padding: .3rem 1.5rem;
+  }
 }
 
 .form-title {
   color: #fafafa;
   margin-bottom: 1.5rem;
+  font-weight: 400;
 }
 </style>

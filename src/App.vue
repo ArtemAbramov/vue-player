@@ -21,10 +21,13 @@ export default {
   box-sizing: border-box;
 }
 
+html {
+  font-size: 16px;
+}
+
 body {
   background-color: #1b1b1b;
   font-family: 'Roboto', sans-serif;
-  font-size: 16px;
 
   &::-webkit-scrollbar {
     width: .5rem;

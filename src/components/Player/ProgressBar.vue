@@ -5,6 +5,10 @@
       @mousemove="dragPointer($event)"
       @click="changeProgress"
   >
+    <span
+        class="progress-bar__tooltip"
+        :style="{left: `${tooltipPos}px`}"
+    >{{tooltipTime}}</span>
     <div
         class="primary-progress"
         :style="{width: `${progress * 100}%`}"
@@ -21,12 +25,14 @@
 <script lang="ts">
 import {ref} from 'vue'
 export default {
-  props: ['progress'],
+  props: ['progress', 'durationTime'],
   setup(props, {emit}) {
     const dragged = ref(false)
     const bar = ref(null)
     const pointer = ref(0)
     const progress = ref(0)
+    const tooltipPos = ref(0)
+    const tooltipTime = ref('0:00')
     const dragPointer = (event) => {
       if (dragged.value) {
         if ((event.clientX >= bar.value.offsetLeft) && (event.clientX <= bar.value.offsetLeft + bar.value.clientWidth)) {
@@ -35,6 +41,17 @@ export default {
           emit('changeProgress', progress)
         }
       }
+
+      if (event.clientX <= 10) {
+        tooltipPos.value = 10
+      } else if (event.clientX >= bar.value.clientWidth - 50) {
+        tooltipPos.value = bar.value.clientWidth - 50
+      } else {
+        tooltipPos.value = event.clientX
+      }
+
+      const current = (props.durationTime / bar.value.clientWidth) * event.clientX
+      tooltipTime.value = `${Math.floor(Math.floor(current) / 60)}:${Math.floor(current) % 60 < 10 ? `0${Math.floor(current) % 60}` : Math.floor(current) % 60}`
     }
 
     const changeProgress = (event) => {
@@ -50,7 +67,9 @@ export default {
       dragPointer,
       changeProgress,
       dragged,
-      bar
+      bar,
+      tooltipPos,
+      tooltipTime
     }
   }
 }
@@ -68,6 +87,21 @@ export default {
     .progress-pointer {
       display: block;
     }
+
+    .progress-bar__tooltip {
+      display: block;
+    }
+  }
+
+  &__tooltip {
+    position: absolute;
+    top: -800%;
+    display: none;
+    color: #fafafa;
+    background-color: #424242;
+    border-radius: 2px;
+    font-size: .8rem;
+    padding: .2rem .4rem;
   }
 }
 
