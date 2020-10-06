@@ -12,6 +12,8 @@
           @prevTrack="prevTrack"
           @nextTrack="nextTrack"
       ></controls>
+      <button @click="testToggle">Toggle</button>
+      <p>{{audioRef.paused}}</p>
       <p class="player__timer">{{currentTime}} / {{durationTime}}</p>
       <div class="track-meta">
         <img class="track-meta__img" :src="[currentTrack.meta.img]" :alt="[currentTrack.meta.album]">
@@ -37,7 +39,7 @@
 
 <script lang="ts">
 import {useStore} from 'vuex'
-import {ref, computed} from 'vue'
+import {ref, computed, reactive} from 'vue'
 import ProgressBar from "@/components/Player/ProgressBar.vue";
 import Controls from "@/components/Player/Controls.vue";
 import Volume from "@/components/Player/Volume.vue";
@@ -55,6 +57,20 @@ export default {
     const currentTrack = computed(() => {
       return store.getters.getCurrentTrack
     })
+
+    const audioRef = reactive(new Audio)
+
+    audioRef.src = currentTrack.value.src
+
+    const testToggle = () => {
+      if (audioRef.paused) {
+        audioRef.play()
+        console.log(audioRef.paused)
+      } else {
+        audioRef.pause()
+        console.log(audioRef.paused)
+      }
+    }
 
     const audio = new Audio()
     audio.src = currentTrack.value.src
@@ -143,6 +159,8 @@ export default {
       volumeLevel,
       volumeToggle,
       volumeChange,
+      testToggle,
+      audioRef
     }
   }
 }
