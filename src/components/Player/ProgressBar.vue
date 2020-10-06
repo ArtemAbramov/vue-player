@@ -1,8 +1,8 @@
 <template>
   <div
       class="progress-bar-wrapper"
-      @mousemove="dragPointer($event)"
-      @click="changeProgress"
+      @mousemove="progressBarHover"
+      @mouseup="changeProgress"
   >
     <div
         class="progress-bar"
@@ -20,7 +20,7 @@
           class="progress-pointer"
           :style="{left: `${progress * 100}%`}"
           @mousedown="dragged = true"
-          @mouseup="dragged = false"
+          @mouseup="changeProgress"
       ></div>
     </div>
   </div>
@@ -38,6 +38,12 @@ export default {
     const progress = ref(0)
     const tooltipPos = ref(0)
     const tooltipTime = ref('0:00')
+
+    const progressBarHover = (event) => {
+      dragPointer(event)
+      showTooltip(event)
+    }
+
     const dragPointer = (event) => {
       if (dragged.value) {
         if ((event.clientX >= bar.value.offsetLeft) && (event.clientX <= bar.value.offsetLeft + bar.value.clientWidth)) {
@@ -46,7 +52,18 @@ export default {
           emit('changeProgress', progress)
         }
       }
+    }
 
+    const changeProgress = (event) => {
+      if ((event.clientX >= bar.value.offsetLeft) && (event.clientX <= bar.value.offsetLeft + bar.value.clientWidth)) {
+        pointer.value = event.clientX - bar.value.offsetLeft
+        progress.value = 1 / bar.value.clientWidth * pointer.value * 100
+        emit('changeProgress', progress)
+      }
+      dragged.value = false
+    }
+
+    const showTooltip = (event) => {
       if (event.clientX <= 30) {
         tooltipPos.value = 30
       } else if (event.clientX >= bar.value.clientWidth - 30) {
@@ -59,17 +76,9 @@ export default {
       tooltipTime.value = durationToTime(current)
     }
 
-    const changeProgress = (event) => {
-      if ((event.clientX >= bar.value.offsetLeft) && (event.clientX <= bar.value.offsetLeft + bar.value.clientWidth)) {
-        pointer.value = event.clientX - bar.value.offsetLeft
-        progress.value = 1 / bar.value.clientWidth * pointer.value * 100
-        emit('changeProgress', progress)
-      }
-    }
-
     return {
+      progressBarHover,
       pointer,
-      dragPointer,
       changeProgress,
       dragged,
       bar,
