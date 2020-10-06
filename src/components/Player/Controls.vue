@@ -45,19 +45,20 @@ export default {
 
   &-link {
     color: #fafafa;
-    font-size: 1.5rem;
-    text-shadow: 0 0 4px rgba(0,0,0, .5);
+    font-size: 1.2rem;
+    text-shadow: 0 0 6px rgba(0,0,0, .5);
+    transition: .5s;
 
     &.play-pause {
-      margin: 0 2rem;
-      font-size: 2rem;
+      margin: 0 2.4rem;
+      font-size: 1.7rem;
     }
 
     &__icon{
       transition: .1s;
 
       &:hover {
-        transform: scale(1.05);
+        text-shadow: 0 0 10px rgba(0,0,0, .5);
       }
     }
   }

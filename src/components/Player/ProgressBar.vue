@@ -1,29 +1,34 @@
 <template>
   <div
-      class="progress-bar"
-      ref="bar"
+      class="progress-bar-wrapper"
       @mousemove="dragPointer($event)"
       @click="changeProgress"
   >
+    <div
+        class="progress-bar"
+        ref="bar"
+    >
     <span
         class="progress-bar__tooltip"
         :style="{left: `${tooltipPos}px`}"
     >{{tooltipTime}}</span>
-    <div
-        class="primary-progress"
-        :style="{width: `${progress * 100}%`}"
-    ></div>
-    <div
-        class="progress-pointer"
-        :style="{left: `${progress * 100}%`}"
-        @mousedown="dragged = true"
-        @mouseup="dragged = false"
-    ></div>
+      <div
+          class="primary-progress"
+          :style="{width: `${progress * 100}%`}"
+      ></div>
+      <div
+          class="progress-pointer"
+          :style="{left: `${progress * 100}%`}"
+          @mousedown="dragged = true"
+          @mouseup="dragged = false"
+      ></div>
+    </div>
   </div>
 </template>
 
 <script lang="ts">
 import {ref} from 'vue'
+import {durationToTime} from "@/utils/durationToTime";
 export default {
   props: ['progress', 'durationTime'],
   setup(props, {emit}) {
@@ -42,16 +47,16 @@ export default {
         }
       }
 
-      if (event.clientX <= 10) {
-        tooltipPos.value = 10
-      } else if (event.clientX >= bar.value.clientWidth - 50) {
-        tooltipPos.value = bar.value.clientWidth - 50
+      if (event.clientX <= 30) {
+        tooltipPos.value = 30
+      } else if (event.clientX >= bar.value.clientWidth - 30) {
+        tooltipPos.value = bar.value.clientWidth - 30
       } else {
         tooltipPos.value = event.clientX
       }
 
       const current = (props.durationTime / bar.value.clientWidth) * event.clientX
-      tooltipTime.value = `${Math.floor(Math.floor(current) / 60)}:${Math.floor(current) % 60 < 10 ? `0${Math.floor(current) % 60}` : Math.floor(current) % 60}`
+      tooltipTime.value = durationToTime(current)
     }
 
     const changeProgress = (event) => {
@@ -79,29 +84,39 @@ export default {
 .progress-bar {
   position: relative;
   width: 100%;
-  height: 4px;
+  height: 3px;
   background-color: #616161;
-  cursor: pointer;
 
-  &:hover {
-    .progress-pointer {
-      display: block;
-    }
+  &-wrapper {
+    position: absolute;
+    left: 0;
+    top: 0;
+    padding: 16px 0px;
+    width: 100%;
+    transform: translateY(-50%);
+    cursor: pointer;
 
-    .progress-bar__tooltip {
-      display: block;
-    }
+    &:hover {
+      .progress-pointer {
+        display: block;
+      }
+
+      .progress-bar__tooltip {
+        display: block;
+      }
+  }
   }
 
   &__tooltip {
     position: absolute;
-    top: -800%;
+    top: -30px;
     display: none;
     color: #fafafa;
     background-color: #424242;
     border-radius: 2px;
     font-size: .8rem;
     padding: .2rem .4rem;
+    transform: translateX(-50%);
   }
 }
 
@@ -117,11 +132,11 @@ export default {
   position: absolute;
   top: 50%;
   display: none;
-  width: 1rem;
-  height: 1rem;
+  width: 4px;
+  height: 4px;
   background-color: #c30000;
   transform: translate(-50%, -50%);
-  border: 10px solid transparent;
+  border: 8px solid transparent;
   border-radius: 50%;
   cursor: pointer;
 }
