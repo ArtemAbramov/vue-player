@@ -12,8 +12,6 @@
           @prevTrack="prevTrack"
           @nextTrack="nextTrack"
       ></controls>
-      <button @click="testToggle">Toggle</button>
-      <p>{{audioRef.paused}}</p>
       <p class="player__timer">{{currentTime}} / {{durationTime}}</p>
       <div class="track-meta">
         <img class="track-meta__img" :src="[currentTrack.meta.img]" :alt="[currentTrack.meta.album]">
@@ -44,6 +42,7 @@ import ProgressBar from "@/components/Player/ProgressBar.vue";
 import Controls from "@/components/Player/Controls.vue";
 import Volume from "@/components/Player/Volume.vue";
 import {durationToTime} from "@/utils/durationToTime";
+import {getFromStorage, setToStorage} from "@/utils/localStorage";
 
 export default {
   components: {
@@ -57,20 +56,6 @@ export default {
     const currentTrack = computed(() => {
       return store.getters.getCurrentTrack
     })
-
-    const audioRef = reactive(new Audio)
-
-    audioRef.src = currentTrack.value.src
-
-    const testToggle = () => {
-      if (audioRef.paused) {
-        audioRef.play()
-        console.log(audioRef.paused)
-      } else {
-        audioRef.pause()
-        console.log(audioRef.paused)
-      }
-    }
 
     const audio = new Audio()
     audio.src = currentTrack.value.src
@@ -127,22 +112,27 @@ export default {
       play()
     }
 
-    const volumeLevel = ref(audio.volume)
-    const volumeSet = ref(audio.volume)
+    const volumeLevel = ref(+getFromStorage('volume'))
+    if (+getFromStorage('volume')) {
+      console.log(+getFromStorage('volume'))
+      volumeLevel.value = +getFromStorage('volume')
+    } else {
+      setToStorage('volume', volumeLevel)
+    }
 
     const volumeToggle = () => {
       if (volumeLevel.value) {
         volumeLevel.value = 0
         audio.volume = 0
       } else {
-        volumeLevel.value = volumeSet.value
-        audio.volume = volumeSet.value
+        volumeLevel.value = +getFromStorage('volume')
+        audio.volume = +getFromStorage('volume')
       }
     }
 
     const volumeChange = (volume) => {
       audio.volume = volume.value
-      volumeSet.value = volume.value
+      setToStorage('volume', volume.value)
     }
 
     return {
@@ -158,9 +148,7 @@ export default {
       duration,
       volumeLevel,
       volumeToggle,
-      volumeChange,
-      testToggle,
-      audioRef
+      volumeChange
     }
   }
 }

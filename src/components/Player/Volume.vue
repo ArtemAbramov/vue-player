@@ -31,8 +31,8 @@ export default {
 
     const dragged = ref(false)
     const bar = ref(null)
-    const pointer = ref(80)
-    const volume = ref(1)
+    const pointer = ref(80 * props.volume)
+    const volume = ref(props.volume)
     emit('volumeChange', volume)
 
     const dragPointer = (event) => {
