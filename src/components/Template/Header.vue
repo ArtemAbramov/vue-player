@@ -7,15 +7,14 @@
 </template>
 
 <script lang="ts">
-import {ref} from 'vue'
-
-export default {
+import {ref, defineComponent} from 'vue'
+export default defineComponent({
   setup() {
     const nav = ref([])
 
     return {}
   }
-}
+})
 </script>
 
 <style lang="scss" scoped>

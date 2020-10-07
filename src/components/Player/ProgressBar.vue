@@ -14,11 +14,11 @@
     >{{tooltipTime}}</span>
       <div
           class="primary-progress"
-          :style="{width: `${progress * 100}%`}"
+          :style="{width: `${progressNew * 100}%`}"
       ></div>
       <div
           class="progress-pointer"
-          :style="{left: `${progress * 100}%`}"
+          :style="{left: `${progressNew * 100}%`}"
           @mousedown="dragged = true"
           @mouseup="changeProgress"
       ></div>
@@ -27,17 +27,26 @@
 </template>
 
 <script lang="ts">
-import {ref} from 'vue'
+import {ref, defineComponent, computed} from 'vue'
 import {durationToTime} from "@/utils/durationToTime";
-export default {
+export default defineComponent({
   props: ['progress', 'durationTime'],
   setup(props, {emit}) {
-    const dragged = ref(false)
-    const bar = ref(null)
-    const pointer = ref(0)
-    const progress = ref(0)
-    const tooltipPos = ref(0)
-    const tooltipTime = ref('0:00')
+    const dragged = ref<boolean>(false)
+    const bar = ref<HTMLElement>(null)
+    const pointer = ref<number>(0)
+    const progress = ref<number>(0)
+    const tooltipPos = ref<number>(0)
+    const tooltipTime = ref<string>('0:00')
+    const progressPhantom = ref<number>(props.progress)
+
+    const progressNew = computed(() => {
+      if (dragged.value) {
+        return progressPhantom.value
+      } else {
+        return props.progress
+      }
+    })
 
     const progressBarHover = (event) => {
       dragPointer(event)
@@ -48,8 +57,7 @@ export default {
       if (dragged.value) {
         if ((event.clientX >= bar.value.offsetLeft) && (event.clientX <= bar.value.offsetLeft + bar.value.clientWidth)) {
           pointer.value = event.clientX - bar.value.offsetLeft
-          progress.value = 1 / bar.value.clientWidth * pointer.value * 100
-          emit('changeProgress', progress)
+          progressPhantom.value = 1 / bar.value.clientWidth * pointer.value
         }
       }
     }
@@ -83,10 +91,11 @@ export default {
       dragged,
       bar,
       tooltipPos,
-      tooltipTime
+      tooltipTime,
+      progressNew
     }
   }
-}
+})
 </script>
 
 <style lang="scss" scoped>

@@ -1,29 +1,33 @@
 <template>
   <div class="volume-block">
     <div
-        class="volume-bar"
-        ref="bar"
+        class="volume-bar-wrapper"
         @mousemove="dragPointer($event)"
         @click="changeVolume"
     >
-      <div class="volume-bar__primary" :style="{width: `${pointer}px`}"></div>
       <div
-          class="volume-bar__pointer"
-          @mousedown="dragged = true"
-          @mouseup="dragged = false"
-          :style="{left: `${pointer}px`}"
-      ></div>
+          class="volume-bar"
+          ref="bar"
+      >
+        <div class="volume-bar__primary" :style="{width: `${pointer}px`}"></div>
+        <div
+            class="volume-bar__pointer"
+            @mousedown="dragged = true"
+            @mouseup="dragged = false"
+            :style="{left: `${pointer}px`}"
+        ></div>
+      </div>
     </div>
     <a href="#" class="volume-toggle" @click.prevent="volumeToggle">
-      <i class="fas" :class="[volume ? 'fa-volume-up' : '', 'fa-volume-mute']"></i>
+      <i class="fas" :class="[volumeLevel ? 'fa-volume-up' : '', 'fa-volume-mute']"></i>
     </a>
   </div>
 </template>
 
 <script lang="ts">
-import {ref} from 'vue'
-export default {
-  props: ['volume'],
+import {ref, defineComponent} from 'vue'
+export default defineComponent({
+  props: ['volumeLevel'],
   setup(props, {emit}) {
     const volumeToggle = () => {
       emit('volumeToggle')
@@ -31,8 +35,8 @@ export default {
 
     const dragged = ref(false)
     const bar = ref(null)
-    const pointer = ref(80 * props.volume)
-    const volume = ref(props.volume)
+    const pointer = ref(80 * props.volumeLevel)
+    const volume = ref(props.volumeLevel)
     emit('volumeChange', volume)
 
     const dragPointer = (event) => {
@@ -62,7 +66,7 @@ export default {
       changeVolume
     }
   }
-}
+})
 </script>
 
 <style lang="scss" scoped>
@@ -81,12 +85,17 @@ export default {
 
 .volume-bar {
   position: relative;
-  margin-right: 1rem;
+  width: 100%;
   height: 3px;
-  width: 5rem;
   background-color: #616161;
   border-radius: 1px;
-  cursor: pointer;
+
+  &-wrapper {
+    padding: 16px 0px;
+    margin-right: 1rem;
+    width: 80px;
+    cursor: pointer;
+  }
 
   &__primary {
     position: absolute;

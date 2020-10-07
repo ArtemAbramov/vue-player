@@ -13,7 +13,8 @@
 </template>
 
 <script lang="ts">
-export default {
+import {defineComponent} from 'vue'
+export default defineComponent({
   props: ['paused'],
   setup(props, {emit}) {
 
@@ -35,7 +36,7 @@ export default {
       prevTrack
     }
   }
-}
+})
 </script>
 
 <style lang="scss" scoped>

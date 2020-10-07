@@ -9,8 +9,8 @@
 </template>
 
 <script lang="ts">
-import {ref} from 'vue'
-export default {
+import {ref, defineComponent} from 'vue'
+export default defineComponent({
   setup() {
     const mail = ref('')
     const password = ref('')
@@ -25,7 +25,7 @@ export default {
       passwordRepeated
     }
   }
-}
+})
 </script>
 
 <style lang="scss" scoped>

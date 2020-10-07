@@ -7,13 +7,14 @@
 </template>
 
 <script lang="ts">
+import {defineComponent} from 'vue'
 import Login from "@/components/Auth/Login.vue";
 import Registration from "@/components/Auth/Registration.vue";
-export default {
+export default defineComponent({
   components: {Login, Registration},
   computed: {
   }
-}
+})
 </script>
 
 <style lang="scss" scoped>

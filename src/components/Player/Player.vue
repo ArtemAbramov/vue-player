@@ -27,7 +27,7 @@
         </div>
       </div>
       <volume
-          :volume="volumeLevel"
+          :volumeLevel="volumeLevel"
           @volumeToggle="volumeToggle"
           @volumeChange="volumeChange"
       ></volume>
@@ -37,14 +37,15 @@
 
 <script lang="ts">
 import {useStore} from 'vuex'
-import {ref, computed, reactive} from 'vue'
+import {ref, computed, reactive, defineComponent} from 'vue'
 import ProgressBar from "@/components/Player/ProgressBar.vue";
 import Controls from "@/components/Player/Controls.vue";
 import Volume from "@/components/Player/Volume.vue";
 import {durationToTime} from "@/utils/durationToTime";
 import {getFromStorage, setToStorage} from "@/utils/localStorage";
+import {ICurrentTrack} from "@/interfaces/player";
 
-export default {
+export default defineComponent({
   components: {
     'progress-bar': ProgressBar,
     Controls,
@@ -53,17 +54,17 @@ export default {
   setup() {
     const store = useStore()
 
-    const currentTrack = computed(() => {
+    const currentTrack = computed<ICurrentTrack>(() => {
       return store.getters.getCurrentTrack
     })
 
-    const audio = new Audio()
+    const audio: HTMLAudioElement = new Audio()
     audio.src = currentTrack.value.src
 
-    const progress = ref(0)
-    const currentTime = ref('0:00')
-    const durationTime = ref('0:00')
-    const duration = ref(0)
+    const progress = ref<number>(0)
+    const currentTime = ref<string>('0:00')
+    const durationTime = ref<string>('0:00')
+    const duration = ref<number>(0)
 
     audio.addEventListener('timeupdate', () => {
       currentTime.value = durationToTime(audio.currentTime)
@@ -132,8 +133,12 @@ export default {
 
     const volumeChange = (volume) => {
       audio.volume = volume.value
-      setToStorage('volume', volume.value)
+      volumeLevel.value = volume.value
     }
+
+    window.addEventListener('unload', () => {
+      setToStorage('volume', audio.volume)
+    })
 
     return {
       currentTrack,
@@ -151,7 +156,7 @@ export default {
       volumeChange
     }
   }
-}
+})
 </script>
 
 <style lang="scss" scoped>

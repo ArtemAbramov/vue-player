@@ -5,13 +5,14 @@
 </template>
 
 <script lang="ts">
-export default {
+import {defineComponent} from 'vue'
+export default defineComponent({
   computed: {
     layout() {
       return this.$route.meta.layout || 'default-layout'
     }
   }
-}
+})
 </script>
 
 <style lang="scss">
