@@ -77,7 +77,7 @@ export default defineComponent({
     })
 
     const changeProgress = (percent) => {
-      audio.currentTime = Math.floor(audio.duration / 100 * percent.value)
+      audio.currentTime = Math.floor(audio.duration * percent.value)
       progress.value = audio.currentTime / audio.duration
     }
 
@@ -139,6 +139,8 @@ export default defineComponent({
     window.addEventListener('unload', () => {
       setToStorage('volume', audio.volume)
     })
+
+    audio.addEventListener('ended', nextTrack)
 
     return {
       currentTrack,

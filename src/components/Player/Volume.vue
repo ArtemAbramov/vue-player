@@ -33,10 +33,10 @@ export default defineComponent({
       emit('volumeToggle')
     }
 
-    const dragged = ref(false)
-    const bar = ref(null)
-    const pointer = ref(80 * props.volumeLevel)
-    const volume = ref(props.volumeLevel)
+    const dragged = ref<boolean>(false)
+    const bar = ref<HTMLElement>(null)
+    const pointer = ref<number>(80 * props.volumeLevel)
+    const volume = ref<number>(props.volumeLevel)
     emit('volumeChange', volume)
 
     const dragPointer = (event) => {

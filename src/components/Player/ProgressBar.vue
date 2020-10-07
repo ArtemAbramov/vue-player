@@ -3,6 +3,7 @@
       class="progress-bar-wrapper"
       @mousemove="progressBarHover"
       @mouseup="changeProgress"
+      @mouseleave="leaveBar"
   >
     <div
         class="progress-bar"
@@ -14,13 +15,12 @@
     >{{tooltipTime}}</span>
       <div
           class="primary-progress"
-          :style="{width: `${progressNew * 100}%`}"
+          :style="{width: `${progressPointer * 100}%`}"
       ></div>
       <div
           class="progress-pointer"
-          :style="{left: `${progressNew * 100}%`}"
+          :style="{left: `${progressPointer * 100}%`}"
           @mousedown="dragged = true"
-          @mouseup="changeProgress"
       ></div>
     </div>
   </div>
@@ -34,13 +34,11 @@ export default defineComponent({
   setup(props, {emit}) {
     const dragged = ref<boolean>(false)
     const bar = ref<HTMLElement>(null)
-    const pointer = ref<number>(0)
-    const progress = ref<number>(0)
     const tooltipPos = ref<number>(0)
     const tooltipTime = ref<string>('0:00')
     const progressPhantom = ref<number>(props.progress)
 
-    const progressNew = computed(() => {
+    const progressPointer = computed<number>(() => {
       if (dragged.value) {
         return progressPhantom.value
       } else {
@@ -48,25 +46,13 @@ export default defineComponent({
       }
     })
 
-    const progressBarHover = (event) => {
-      dragPointer(event)
-      showTooltip(event)
-    }
-
-    const dragPointer = (event) => {
+    const leaveBar = (event) => {
       if (dragged.value) {
-        if ((event.clientX >= bar.value.offsetLeft) && (event.clientX <= bar.value.offsetLeft + bar.value.clientWidth)) {
-          pointer.value = event.clientX - bar.value.offsetLeft
-          progressPhantom.value = 1 / bar.value.clientWidth * pointer.value
+        if (event.clientX <= 0) {
+          changeProgress(event)
+        } else if (event.clientX >= bar.value.clientWidth) {
+          changeProgress(event)
         }
-      }
-    }
-
-    const changeProgress = (event) => {
-      if ((event.clientX >= bar.value.offsetLeft) && (event.clientX <= bar.value.offsetLeft + bar.value.clientWidth)) {
-        pointer.value = event.clientX - bar.value.offsetLeft
-        progress.value = 1 / bar.value.clientWidth * pointer.value * 100
-        emit('changeProgress', progress)
       }
       dragged.value = false
     }
@@ -84,15 +70,32 @@ export default defineComponent({
       tooltipTime.value = durationToTime(current)
     }
 
+    const changeProgress = (event) => {
+      changePointer(event)
+      emit('changeProgress', progressPhantom)
+      dragged.value = false
+    }
+
+    const changePointer = (event) => {
+      progressPhantom.value = 1 / bar.value.clientWidth * event.clientX
+    }
+
+    const progressBarHover = (event) => {
+      if (dragged.value) {
+        changePointer(event)
+      }
+      showTooltip(event)
+    }
+
     return {
       progressBarHover,
-      pointer,
       changeProgress,
       dragged,
       bar,
       tooltipPos,
       tooltipTime,
-      progressNew
+      progressPointer,
+      leaveBar
     }
   }
 })
