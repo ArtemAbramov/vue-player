@@ -48,11 +48,7 @@ export default defineComponent({
 
     const leaveBar = (event) => {
       if (dragged.value) {
-        if (event.clientX <= 0) {
-          changeProgress(event)
-        } else if (event.clientX >= bar.value.clientWidth) {
-          changeProgress(event)
-        }
+        changeProgress(event)
       }
       dragged.value = false
     }
