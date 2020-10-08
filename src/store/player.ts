@@ -8,7 +8,8 @@ export const playerModule = {
                 artist: 'Architects',
                 album: 'Holy hell',
                 year: '2018',
-                img: './img/Album.jpg'
+                img: './img/Album.jpg',
+                imgBig: './img/Album--big.jpg'
             }
         },
         tracks: [
@@ -20,7 +21,8 @@ export const playerModule = {
                     artist: 'Architects',
                     album: 'Holy hell',
                     year: '2018',
-                    img: './img/Album.jpg'
+                    img: './img/Album.jpg',
+                    imgBig: './img/Album--big.jpg'
                 }
             },
             {
@@ -31,7 +33,8 @@ export const playerModule = {
                     artist: 'Slaughter To Prevail',
                     album: 'Chapters of Misery (EP)',
                     year: '2015',
-                    img: './img/Album_2.jpg'
+                    img: './img/Album_2.jpg',
+                    imgBig: './img/Album_2--big.jpg'
                 }
             }
         ]

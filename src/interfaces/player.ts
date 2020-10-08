@@ -7,6 +7,7 @@ export interface ITrack {
         album: string
         year: string
         img: string
+        imgBig: string
         duration?: string
     }
 }

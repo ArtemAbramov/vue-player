@@ -37,7 +37,7 @@
 
 <script lang="ts">
 import {useStore} from 'vuex'
-import {ref, computed, reactive, defineComponent} from 'vue'
+import {ref, computed, defineComponent, watch} from 'vue'
 import ProgressBar from "@/components/Player/ProgressBar.vue";
 import Controls from "@/components/Player/Controls.vue";
 import Volume from "@/components/Player/Volume.vue";
@@ -58,11 +58,17 @@ export default defineComponent({
       store.dispatch('setCurrentTrack', JSON.parse(getFromStorage('currentTrack')))
     }
 
+    const audio: HTMLAudioElement = new Audio()
+
     const currentTrack = computed<ITrack>(() => {
       return store.getters.getCurrentTrack
     })
 
-    const audio: HTMLAudioElement = new Audio()
+    watch(() => currentTrack.value, () => {
+      audio.src = currentTrack.value.src
+      play()
+    })
+
     audio.src = currentTrack.value.src
     audio.currentTime = +getFromStorage('progress')
 
@@ -88,14 +94,24 @@ export default defineComponent({
 
     const paused = ref(audio.paused)
 
-    const play = () => {
-      audio.play()
-      paused.value = false
+    const play = async () => {
+      try {
+        await audio.play()
+        paused.value = false
+      }
+      catch (err) {
+        console.log(err)
+      }
     }
 
-    const pause = () => {
-      audio.pause()
-      paused.value = true
+    const pause = async () => {
+      try {
+        await audio.pause()
+        paused.value = true
+      }
+      catch (err) {
+        console.log(err)
+      }
     }
 
     const playPause = () => {
@@ -108,14 +124,10 @@ export default defineComponent({
 
     const prevTrack = () => {
       store.dispatch('prevTrack')
-      audio.src = currentTrack.value.src
-      play()
     }
 
     const nextTrack = () => {
       store.dispatch('nextTrack')
-      audio.src = currentTrack.value.src
-      play()
     }
 
     const volumeLevel = ref(+getFromStorage('volume'))
