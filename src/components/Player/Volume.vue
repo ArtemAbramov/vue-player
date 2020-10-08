@@ -2,19 +2,18 @@
   <div class="volume-block">
     <div
         class="volume-bar-wrapper"
-        @mousemove="dragPointer($event)"
-        @click="changeVolume"
+        @mousemove="dragPointer"
+        @mouseup="changeVolume"
     >
       <div
           class="volume-bar"
           ref="bar"
       >
-        <div class="volume-bar__primary" :style="{width: `${pointer}px`}"></div>
+        <div class="volume-bar__primary" :style="{width: `${volume * 100}%`}"></div>
         <div
             class="volume-bar__pointer"
             @mousedown="dragged = true"
-            @mouseup="dragged = false"
-            :style="{left: `${pointer}px`}"
+            :style="{left: `${volume * 100}%`}"
         ></div>
       </div>
     </div>
@@ -35,26 +34,36 @@ export default defineComponent({
 
     const dragged = ref<boolean>(false)
     const bar = ref<HTMLElement>(null)
-    const pointer = ref<number>(80 * props.volumeLevel)
     const volume = ref<number>(props.volumeLevel)
     emit('volumeChange', volume)
 
     const dragPointer = (event) => {
       if (dragged.value) {
-        if ((event.clientX >= bar.value.offsetLeft) && (event.clientX <= bar.value.offsetLeft + bar.value.clientWidth)) {
-          pointer.value = event.clientX - bar.value.offsetLeft
-          volume.value = 1 / bar.value.clientWidth * pointer.value
-          emit('volumeChange', volume)
+        if ((event.clientX > bar.value.offsetLeft) && (event.clientX < bar.value.offsetLeft + bar.value.clientWidth)) {
+          volume.value = 1 / bar.value.clientWidth * (event.clientX - bar.value.offsetLeft)
+        } else if (event.clientX <= bar.value.offsetLeft) {
+          volume.value = 0
+          dragged.value = false
+        } else if (event.clientX >= bar.value.offsetLeft + bar.value.clientWidth) {
+          volume.value = 1
+          dragged.value = false
         }
+        emit('volumeChange', volume)
       }
     }
 
     const changeVolume = (event) => {
-      if ((event.clientX >= bar.value.offsetLeft) && (event.clientX <= bar.value.offsetLeft + bar.value.clientWidth)) {
-        pointer.value = event.clientX - bar.value.offsetLeft
-        volume.value = 1 / bar.value.clientWidth * pointer.value
-        emit('volumeChange', volume)
+      if ((event.clientX > bar.value.offsetLeft) && (event.clientX < bar.value.offsetLeft + bar.value.clientWidth)) {
+        volume.value = 1 / bar.value.clientWidth * (event.clientX - bar.value.offsetLeft)
+      } else if (event.clientX <= bar.value.offsetLeft) {
+        volume.value = 0
+        dragged.value = false
+      } else if (event.clientX >= bar.value.offsetLeft + bar.value.clientWidth) {
+        volume.value = 1
+        dragged.value = false
       }
+      emit('volumeChange', volume)
+      dragged.value = false
     }
 
     return {
@@ -62,8 +71,8 @@ export default defineComponent({
       dragged,
       dragPointer,
       bar,
-      pointer,
-      changeVolume
+      changeVolume,
+      volume
     }
   }
 })
