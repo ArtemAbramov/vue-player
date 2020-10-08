@@ -54,12 +54,17 @@ export default defineComponent({
   setup() {
     const store = useStore()
 
+    if (getFromStorage('currentTrack')) {
+      store.dispatch('setCurrentTrack', JSON.parse(getFromStorage('currentTrack')))
+    }
+
     const currentTrack = computed<ICurrentTrack>(() => {
       return store.getters.getCurrentTrack
     })
 
     const audio: HTMLAudioElement = new Audio()
     audio.src = currentTrack.value.src
+    audio.currentTime = +getFromStorage('progress')
 
     const progress = ref<number>(0)
     const currentTime = ref<string>('0:00')
@@ -115,7 +120,6 @@ export default defineComponent({
 
     const volumeLevel = ref(+getFromStorage('volume'))
     if (+getFromStorage('volume')) {
-      console.log(+getFromStorage('volume'))
       volumeLevel.value = +getFromStorage('volume')
     } else {
       setToStorage('volume', volumeLevel)
@@ -138,6 +142,8 @@ export default defineComponent({
 
     window.addEventListener('unload', () => {
       setToStorage('volume', audio.volume)
+      setToStorage('currentTrack', JSON.stringify(currentTrack.value))
+      setToStorage('progress', audio.currentTime)
     })
 
     audio.addEventListener('ended', nextTrack)

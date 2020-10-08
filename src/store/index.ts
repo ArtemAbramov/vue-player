@@ -50,12 +50,10 @@ export default createStore({
     prevTrack(state) {
       const index = state.currentTrack.id - 1 < 0 ? state.tracks.length -1 : state.currentTrack.id - 1
       state.currentTrack = state.tracks[index]
-      console.log(index)
     },
     nextTrack(state) {
       const index = state.currentTrack.id + 1 >= state.tracks.length ? 0 : state.currentTrack.id + 1
       state.currentTrack = state.tracks[index]
-      console.log(index)
     }
   },
   actions: {
