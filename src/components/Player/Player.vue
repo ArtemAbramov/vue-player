@@ -43,7 +43,7 @@ import Controls from "@/components/Player/Controls.vue";
 import Volume from "@/components/Player/Volume.vue";
 import {durationToTime} from "@/utils/durationToTime";
 import {getFromStorage, setToStorage} from "@/utils/localStorage";
-import {ICurrentTrack} from "@/interfaces/player";
+import {ITrack} from "@/interfaces/player";
 
 export default defineComponent({
   components: {
@@ -58,7 +58,7 @@ export default defineComponent({
       store.dispatch('setCurrentTrack', JSON.parse(getFromStorage('currentTrack')))
     }
 
-    const currentTrack = computed<ICurrentTrack>(() => {
+    const currentTrack = computed<ITrack>(() => {
       return store.getters.getCurrentTrack
     })
 
@@ -190,7 +190,7 @@ export default defineComponent({
 
 .track-meta {
   display: flex;
-  margin-left: 18rem;
+  margin-left: 14rem;
   margin-right: auto;
   height: 50px;
   color: #fafafa;

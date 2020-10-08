@@ -1,4 +1,4 @@
-export interface ICurrentTrack {
+export interface ITrack {
     id: number
     src: string
     meta: {
@@ -7,5 +7,6 @@ export interface ICurrentTrack {
         album: string
         year: string
         img: string
+        duration?: string
     }
 }
