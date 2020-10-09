@@ -35,8 +35,6 @@ export default defineComponent({
       return store.getters.getCurrentTrack
     })
 
-    console.log(currentTrack.value.meta.imgBig)
-
     const playlist = computed<ITrack[]>(() => {
       return store.getters.getPlaylist
     })
@@ -46,7 +44,6 @@ export default defineComponent({
       audio.preload = 'metadata'
       audio.addEventListener('loadedmetadata', () => {
         item.meta.duration = durationToTime(audio.duration)
-        console.log(audio.duration)
       })
     })
 
