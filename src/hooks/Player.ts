@@ -1,10 +1,17 @@
 import {useStore} from 'vuex'
-import {ref, computed, defineComponent, watch} from 'vue'
+import {ref, computed, watch} from 'vue'
 import {durationToTime} from "@/utils/durationToTime";
 import {getFromStorage, setToStorage} from "@/utils/localStorage";
 import {ITrack} from "@/interfaces/player";
 
 const audio: HTMLAudioElement = new Audio()
+
+const paused = ref(audio.paused)
+
+const progress = ref<number>(0)
+const currentTime = ref<string>('0:00')
+const durationTime = ref<string>('0:00')
+const duration = ref<number>(0)
 
 export default function usePlayer() {
   const store = useStore()
@@ -25,11 +32,6 @@ export default function usePlayer() {
   audio.src = currentTrack.value.src
   audio.currentTime = +getFromStorage('progress')
 
-  const progress = ref<number>(0)
-  const currentTime = ref<string>('0:00')
-  const durationTime = ref<string>('0:00')
-  const duration = ref<number>(0)
-
   audio.addEventListener('timeupdate', () => {
     currentTime.value = durationToTime(audio.currentTime)
     durationTime.value = durationToTime(audio.duration)
@@ -44,8 +46,6 @@ export default function usePlayer() {
     audio.currentTime = Math.floor(audio.duration * percent.value)
     progress.value = audio.currentTime / audio.duration
   }
-
-  const paused = ref(audio.paused)
 
   const play = async () => {
     try {

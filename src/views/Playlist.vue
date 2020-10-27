@@ -10,7 +10,9 @@
       >
         <div class="track-preview">
           <img :src="track.meta.img" :alt="track.meta.title" class="track-preview__img">
-          <a href="#" @click.prevent="changeTrack(track)" class="track__play-btn"><i class="fa fa-play"></i></a>
+          <a href="#" @click.prevent="changeTrack(track)" class="track__play-btn">
+            <i class="fa" :class="[!paused && track.id === currentTrack.id ? 'fa-pause' : 'fa-play']"></i>
+          </a>
         </div>
         <div class="track-info">
           <p class="track__title">{{track.meta.title}}</p>
@@ -27,13 +29,12 @@ import {defineComponent, computed} from 'vue'
 import {useStore} from "vuex";
 import {ITrack} from "@/interfaces/player";
 import {durationToTime} from "@/utils/durationToTime";
+import usePlayer from "@/hooks/Player";
 export default defineComponent({
   setup() {
-    const store = useStore()
+    const {paused, currentTrack, playPause} = usePlayer()
 
-    const currentTrack = computed<ITrack>(() => {
-      return store.getters.getCurrentTrack
-    })
+    const store = useStore()
 
     const playlist = computed<ITrack[]>(() => {
       return store.getters.getPlaylist
@@ -48,13 +49,18 @@ export default defineComponent({
     })
 
     const changeTrack = (track) => {
-      store.dispatch('setCurrentTrack', track)
+      if (currentTrack.value.id === track.id) {
+        playPause()
+      } else {
+        store.dispatch('setCurrentTrack', track)
+      }
     }
 
     return {
       currentTrack,
       playlist,
-      changeTrack
+      changeTrack,
+      paused
     }
   }
 })
