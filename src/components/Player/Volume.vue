@@ -9,11 +9,11 @@
           class="volume-bar"
           ref="bar"
       >
-        <div class="volume-bar__primary" :style="{width: `${volume * 100}%`}"></div>
+        <div class="volume-bar__primary" :style="{width: `${volumeLevel * 100}%`}"></div>
         <div
             class="volume-bar__pointer"
             @mousedown="dragged = true"
-            :style="{left: `${volume * 100}%`}"
+            :style="{left: `${volumeLevel * 100}%`}"
         ></div>
       </div>
     </div>
@@ -24,45 +24,42 @@
 </template>
 
 <script lang="ts">
+import usePlayer from '@/hooks/Player'
 import {ref, defineComponent} from 'vue'
 export default defineComponent({
-  props: ['volumeLevel'],
-  setup(props, {emit}) {
-    const volumeToggle = () => {
-      emit('volumeToggle')
-    }
+  setup() {
+    const {volumeToggle, volumeLevel, volumeChange} = usePlayer()
 
     const dragged = ref<boolean>(false)
     const bar = ref<HTMLElement>(null)
-    const volume = ref<number>(props.volumeLevel)
-    emit('volumeChange', volume)
+    volumeChange(volumeLevel)
 
     const dragPointer = (event) => {
       if (dragged.value) {
         if ((event.clientX > bar.value.offsetLeft) && (event.clientX < bar.value.offsetLeft + bar.value.clientWidth)) {
-          volume.value = 1 / bar.value.clientWidth * (event.clientX - bar.value.offsetLeft)
+          volumeLevel.value = 1 / bar.value.clientWidth * (event.clientX - bar.value.offsetLeft)
         } else if (event.clientX <= bar.value.offsetLeft) {
-          volume.value = 0
+          volumeLevel.value = 0
           dragged.value = false
         } else if (event.clientX >= bar.value.offsetLeft + bar.value.clientWidth) {
-          volume.value = 1
+          volumeLevel.value = 1
           dragged.value = false
         }
-        emit('volumeChange', volume)
+        volumeChange(volumeLevel)
       }
     }
 
     const changeVolume = (event) => {
       if ((event.clientX > bar.value.offsetLeft) && (event.clientX < bar.value.offsetLeft + bar.value.clientWidth)) {
-        volume.value = 1 / bar.value.clientWidth * (event.clientX - bar.value.offsetLeft)
+        volumeLevel.value = 1 / bar.value.clientWidth * (event.clientX - bar.value.offsetLeft)
       } else if (event.clientX <= bar.value.offsetLeft) {
-        volume.value = 0
+        volumeLevel.value = 0
         dragged.value = false
       } else if (event.clientX >= bar.value.offsetLeft + bar.value.clientWidth) {
-        volume.value = 1
+        volumeLevel.value = 1
         dragged.value = false
       }
-      emit('volumeChange', volume)
+      volumeChange(volumeLevel)
       dragged.value = false
     }
 
@@ -72,7 +69,7 @@ export default defineComponent({
       dragPointer,
       bar,
       changeVolume,
-      volume
+      volumeLevel
     }
   }
 })

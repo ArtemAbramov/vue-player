@@ -2,7 +2,7 @@
   <div
       class="progress-bar-wrapper"
       @mousemove="progressBarHover"
-      @mouseup="changeProgress"
+      @mouseup="progressChange"
       @mouseleave="leaveBar"
   >
     <div
@@ -29,26 +29,28 @@
 <script lang="ts">
 import {ref, defineComponent, computed} from 'vue'
 import {durationToTime} from "@/utils/durationToTime";
+import usePlayer from '@/hooks/Player';
 export default defineComponent({
-  props: ['progress', 'durationTime'],
-  setup(props, {emit}) {
+  setup() {
+    const {changeProgress, progress, duration} = usePlayer()
+
     const dragged = ref<boolean>(false)
     const bar = ref<HTMLElement>(null)
     const tooltipPos = ref<number>(0)
     const tooltipTime = ref<string>('0:00')
-    const progressPhantom = ref<number>(props.progress)
+    const progressPhantom = ref<number>(progress.value)
 
     const progressPointer = computed<number>(() => {
       if (dragged.value) {
         return progressPhantom.value
       } else {
-        return props.progress
+        return progress.value
       }
     })
 
     const leaveBar = (event) => {
       if (dragged.value) {
-        changeProgress(event)
+        progressChange(event)
       }
       dragged.value = false
     }
@@ -62,13 +64,13 @@ export default defineComponent({
         tooltipPos.value = event.clientX
       }
 
-      const current = (props.durationTime / bar.value.clientWidth) * event.clientX
+      const current = (duration.value / bar.value.clientWidth) * event.clientX
       tooltipTime.value = durationToTime(current)
     }
 
-    const changeProgress = (event) => {
+    const progressChange = (event) => {
       changePointer(event)
-      emit('changeProgress', progressPhantom)
+      changeProgress(progressPhantom)
       dragged.value = false
     }
 
@@ -85,7 +87,7 @@ export default defineComponent({
 
     return {
       progressBarHover,
-      changeProgress,
+      progressChange,
       dragged,
       bar,
       tooltipPos,

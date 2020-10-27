@@ -14,23 +14,13 @@
 
 <script lang="ts">
 import {defineComponent} from 'vue'
+import usePlayer from '@/hooks/Player'
 export default defineComponent({
-  props: ['paused'],
-  setup(props, {emit}) {
-
-    const playPause = () => {
-      emit('playpause')
-    }
-
-    const nextTrack = () => {
-      emit('nextTrack')
-    }
-
-    const prevTrack = () => {
-      emit('prevTrack')
-    }
+  setup() {
+    const {paused, playPause, nextTrack, prevTrack} = usePlayer()
 
     return {
+      paused,
       playPause,
       nextTrack,
       prevTrack
